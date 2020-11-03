@@ -45,5 +45,5 @@ export interface Page {
 }
 
 export interface PageContext extends Page {
-	error?: Error
+	error: Error | null;
 };
