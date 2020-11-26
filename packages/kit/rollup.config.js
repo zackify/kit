@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json';
 import { readFileSync, writeFileSync } from 'fs';
 
@@ -32,15 +32,10 @@ export default [
 				extensions: ['.mjs', '.js', '.ts']
 			}),
 			typescript(/*{
-				tsconfigDefaults: {
-					compilerOptions: {
-						// create typings. these options do not apply to the other build target
-						declaration: true,
-						emitDeclarationOnly: true,
-						outFile: './index.js'
-					}
-				},
-				useTsconfigDeclarationDir: true
+				// create typings. these options do not apply to the other build target
+				declaration: true,
+				emitDeclarationOnly: true,
+				outFile: './index.js'
 			}*/),
 			/*{
 				name: 'adjust-typings',

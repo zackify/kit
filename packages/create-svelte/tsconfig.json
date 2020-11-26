@@ -1,5 +1,7 @@
 {
 	"compilerOptions": {
+		"outDir": ".",
+		"rootDir": "cli",
 		"resolveJsonModule": true,
 		"module": "esnext",
 		"moduleResolution": "node",
@@ -7,5 +9,6 @@
 		"esModuleInterop": true
 	},
 	"include": ["cli/**/*"],
+	"exclude": ["node_modules"],
 	"lib": ["ES2020", "dom", "node"]
 }

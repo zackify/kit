@@ -8,7 +8,6 @@ import create_manifest_data from '../../core/create_manifest_data';
 import { createServer, Server } from 'http';
 import { create_app } from '../../core/create_app';
 import snowpack, { SnowpackDevServer, SnowpackConfig } from 'snowpack';
-import pkg from '../../../package.json';
 import loader from './loader';
 import { ManifestData, ReadyEvent } from '../../interfaces';
 import { mkdirp } from '@sveltejs/app-utils/files';
@@ -18,6 +17,8 @@ import { SSRComponentModule, SetupModule, Method } from '@sveltejs/app-utils';
 import { DevConfig, Loader } from './types';
 import { copy_assets } from '../utils';
 import { readFileSync } from 'fs';
+
+const pkg = require('../../../package.json');
 
 export function dev(opts: DevConfig): Promise<Watcher> {
 	return new Watcher(opts).init();

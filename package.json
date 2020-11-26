@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"build": "pnpm build --filter=\"@sveltejs/*\" --filter=\"create-svelte\"",
 		"test": "pnpm -r test",
 		"lint": "pnpm -r lint",
 		"format": "pnpm -r format"
@@ -23,6 +24,7 @@
 		"@rollup/plugin-commonjs": "^15.1.0",
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^9.0.0",
+		"@rollup/plugin-typescript": "^8.1.0",
 		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.6.0",
 		"@typescript-eslint/eslint-plugin": "^4.6.0",
 		"@typescript-eslint/parser": "^4.6.0",
@@ -31,7 +33,6 @@
 		"eslint-plugin-svelte3": "^2.7.3",
 		"prettier": "2.1.2",
 		"rollup": "^2.32.0",
-		"rollup-plugin-typescript2": "^0.29.0",
 		"tslib": "^2.0.3",
 		"typescript": "^4.0.3"
 	}
