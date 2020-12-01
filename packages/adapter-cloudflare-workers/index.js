@@ -29,13 +29,11 @@ module.exports = async function adapter(builder) {
 	}
 
 	const bucket = path.resolve(wrangler_config.site.bucket);
-	const entrypoint = path.resolve(wrangler_config.site['entry-point'] ?? "workers-site");
-
+	const entrypoint = path.resolve(wrangler_config.site['entry-point'] ?? 'workers-site');
 
 	builder.copy_static_files(bucket);
 	builder.copy_client_files(bucket);
 	builder.copy_server_files(entrypoint);
-
 
 	// copy the renderer
 	fs.copyFileSync(path.resolve(__dirname, 'files/render.js'), `${entrypoint}/index.js`);
@@ -47,13 +45,17 @@ module.exports = async function adapter(builder) {
 		dest: bucket
 	});
 
-	builder.log.info('Installing Worker Dependencies...')
-	exec('npm install', {
-		cwd: entrypoint
-	}, function(error, stdout, stderr) {
-		builder.log.info(stderr);	
-		if (error) {
-			builder.log.error(error);
-		} 
-    });
+	builder.log.info('Installing Worker Dependencies...');
+	exec(
+		'npm install',
+		{
+			cwd: entrypoint
+		},
+		(error, stdout, stderr) => {
+			builder.log.info(stderr);
+			if (error) {
+				builder.log.error(error);
+			}
+		}
+	);
 };

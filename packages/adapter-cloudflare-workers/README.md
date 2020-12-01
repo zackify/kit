@@ -1,6 +1,6 @@
 # adapter-cloundflare-workers
 
-Adapter for Svelte apps that creates a cloudflare workers site, using a function for dynamic server rendering. 
+Adapter for Svelte apps that creates a cloudflare workers site, using a function for dynamic server rendering.
 
 This is very experimental; the adapter API isn't at all fleshed out, and things will definitely change.
 
@@ -18,11 +18,10 @@ Then configure your sites build directory in the config file:
 
 ```toml
 [site]
-publish = "./build" 
+publish = "./build"
 functions = "./workers-site"
 ```
 
 It's recommended that you add the `build` and `workers-site` folders (or whichever other folders you specify) to your `.gitignore`.
 
 More info on configuring a cloudflare worker site can be found [here](https://developers.cloudflare.com/workers/platform/sites/start-from-existing)
-
