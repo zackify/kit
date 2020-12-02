@@ -16,6 +16,7 @@ import { mkdirp } from '@sveltejs/app-utils/files';
 import { render } from '../../renderer';
 import { get_body } from '@sveltejs/app-utils/http';
 import { copy_assets } from '../utils';
+import node_platform from '../../platform/node'
 
 export function dev(opts) {
 	return new Watcher(opts).init();
@@ -95,6 +96,8 @@ class Watcher extends EventEmitter {
 			dev: true
 		});
 
+		const platform = node_platform(this.config.paths);
+
 		this.server = createServer(async (req, res) => {
 			if (req.url === '/' && req.headers.upgrade === 'websocket') {
 				return this.snowpack.handleRequest(req, res);
@@ -163,6 +166,7 @@ class Watcher extends EventEmitter {
 						dev: true,
 						root,
 						setup,
+						platform,
 						load: (route) => load(route.url.replace(/\.\w+$/, '.js')), // TODO is the replace still necessary?
 						only_prerender: false
 					}

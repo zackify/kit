@@ -1,9 +1,5 @@
- import devalue from 'devalue';
-import { createReadStream, existsSync } from 'fs';
-import * as mime from 'mime';
-import fetch, { Response } from 'node-fetch';
+import devalue from 'devalue';
 import { readable, writable } from 'svelte/store';
-import { parse, resolve, URLSearchParams } from 'url';
 import { render } from './index';
 
 const noop = () => {};
@@ -52,32 +48,29 @@ async function get_response({
 			throw error;
 		},
 		fetch: async (url, opts = {}) => {
-			const parsed = parse(url);
+			
+			const parsed = new URL(url, 'file://');
 
-			if (parsed.protocol) {
+			if (parsed.protocol != 'file:') {
 				// external fetch
-				return fetch(parsed.href, opts);
+				return options.platform.fetch(parsed.href, opts);
 			}
 
 			// otherwise we're dealing with an internal fetch. TODO there's
 			// probably no advantage to using fetch here — we should replace
 			// `this.fetch` with `this.load` or whatever
 
-			const resolved = resolve(request.path, parsed.pathname);
+			const resolved = new URL(request.path, parsed.href).pathname;
 
 			// edge case — fetching a static file
 			const candidates = [
-				`${options.static_dir}${resolved}`,
-				`${options.static_dir}${resolved}/index.html`
+				`${resolved}`,
+				`${resolved}/index.html`
 			];
 			for (const file of candidates) {
-				if (existsSync(file)) {
-					return new Response(createReadStream(file), {
-						headers: {
-							'content-type': mime.getType(file)
-						}
-					});
-				}
+				const res = options.platform.fetch_file(file);
+				if (res)
+					return res;
 			}
 
 			// TODO this doesn't take account of opts.body
@@ -88,7 +81,7 @@ async function get_response({
 					headers: opts.headers || {}, // TODO inject credentials...
 					path: resolved,
 					body: opts.body,
-					query: new URLSearchParams(parsed.query || '')
+					query: parsed.searchParams || ''
 				},
 				options
 			);
@@ -98,12 +91,12 @@ async function get_response({
 				// but could it be used elsewhere?
 				dependencies[resolved] = rendered;
 
-				return new Response(rendered.body, {
+				return options.platform.create_response(rendered.body, {
 					status: rendered.status,
 					headers: rendered.headers
 				});
 			} else {
-				return new Response('Not found', {
+				return options.platform.create_response('Not found', {
 					status: 404
 				});
 			}

@@ -3,4 +3,5 @@
 /dist
 /assets/app
 /assets/renderer
+/assets/platform
 /client/**/*.d.ts

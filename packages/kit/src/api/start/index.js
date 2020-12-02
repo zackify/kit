@@ -4,6 +4,7 @@ import relative from 'require-relative';
 import { parse, URLSearchParams } from 'url';
 import sirv from 'sirv';
 import { get_body } from '@sveltejs/app-utils/http';
+import node_platform from '../../platform/node'
 
 const mutable = (dir) =>
 	sirv(dir, {
@@ -23,6 +24,8 @@ export function start({ port }) {
 			maxAge: 31536000,
 			immutable: true
 		});
+		
+		const platform = node_platform(app.paths);
 
 		const server = http.createServer((req, res) => {
 			assets_handler(req, res, () => {
@@ -36,7 +39,7 @@ export function start({ port }) {
 						path: parsed.pathname,
 						body: await get_body(req),
 						query: new URLSearchParams(parsed.query || '')
-					});
+					}, {platform});
 
 					if (rendered) {
 						res.writeHead(rendered.status, rendered.headers);

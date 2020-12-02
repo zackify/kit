@@ -216,6 +216,20 @@ export async function build(config) {
 
 		log.success('client');
 
+		function load_endpoint() {
+			if (!config.static_requires) 
+				return "(route) => require(`./routes/${route.name}.js`);"
+			
+			// build a static require list from manifest
+			const cases = manifest.endpoints
+						.map(({name}) => `\t\t\t\t\t\tcase '${name}': return require('./routes/${name}.js');`)
+						.join('\n')
+
+			return `(route) => {\n\t\t\t\t\tswitch (route.name) {\n${cases}\n\t\t\t\t\t}\n\t\t\t\t}`;
+		}
+		
+
+
 		fs.writeFileSync(`${unoptimized}/server/app.js`, `
 			import * as renderer from '@sveltejs/kit/assets/renderer';
 			import root from './_app/assets/generated/root.js';
@@ -251,7 +265,9 @@ export async function build(config) {
 				static: ${s(config.paths.static)}
 			};
 
-			export function render(request, { only_prerender = false } = {}) {
+			const load_func = ${load_endpoint()}
+
+			export function render(request, { only_prerender = false, platform } = {}) {
 				return renderer.render(request, {
 					static_dir: paths.static,
 					template,
@@ -260,7 +276,8 @@ export async function build(config) {
 					client,
 					root,
 					setup,
-					load: (route) => require(\`./routes/\${route.name}.js\`),
+					platform,
+					load: load_func,
 					dev: false,
 					only_prerender
 				});

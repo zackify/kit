@@ -9,6 +9,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-netlify": "workspace:*",
 		"@sveltejs/adapter-cloudflare-workers": "workspace:*",
+		"@sveltejs/adapter-node": "workspace:*",
 		"@sveltejs/kit": "workspace:*",
 		"@sveltejs/snowpack-config": "workspace:*",
 		"svelte": "^3.29.0"

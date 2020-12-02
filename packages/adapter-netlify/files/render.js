@@ -3,6 +3,9 @@
 const url = require('url');
 const app = require('./app.js');
 
+const node_platform = require('@sveltejs/kit/assets/plaform/node')
+const platform = node_platform(app.paths)
+
 exports.handler = async (event) => {
 	const {
 		path,
@@ -27,7 +30,7 @@ exports.handler = async (event) => {
 		headers,
 		path,
 		query
-	});
+	}, { platform });
 
 	if (rendered) {
 		return {

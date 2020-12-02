@@ -2,6 +2,7 @@ import relative from 'require-relative';
 
 const default_config = {
 	target: null,
+	static_requires: false,
 	paths: {
 		static: 'static',
 		routes: 'src/routes',

@@ -2,6 +2,7 @@ import fs from 'fs';
 import { dirname, resolve as resolve_path } from 'path';
 import { parse, resolve, URLSearchParams } from 'url';
 import { mkdirp } from '@sveltejs/app-utils/files';
+import node_platform from '../../platform/node'
 
 function clean_html(html) {
 	return html
@@ -50,9 +51,9 @@ export async function prerender({
 	force
 }) {
 	const seen = new Set();
-
 	const server_root = resolve_path(dir);
 	const app = require(`${server_root}/server/app.js`);
+	const platform = node_platform(app.paths);
 
 	async function crawl(path) {
 		if (seen.has(path)) return;
@@ -66,6 +67,7 @@ export async function prerender({
 			body: null,
 			query: new URLSearchParams()
 		}, {
+			platform,
 			only_prerender: !force
 		});
 

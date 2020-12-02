@@ -46,6 +46,19 @@ export default [
 	},
 
 	{
+		input: 'src/platform/node/index.js',
+		output: {
+			dir: 'assets/platform/node',
+			format: 'cjs',
+			sourcemap: true
+		},
+		plugins: [
+			resolve(),
+			commonjs()
+		]
+	},
+
+	{
 		input: {
 			cli: 'src/cli.js',
 			api: 'src/api/index.js'

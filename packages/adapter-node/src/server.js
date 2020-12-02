@@ -3,6 +3,7 @@ import * as http from 'http';
 import { parse, URLSearchParams } from 'url';
 import sirv from 'sirv';
 import { get_body } from '@sveltejs/app-utils/http';
+import node_platform from '@sveltejs/kit/assets/platform/node';
 
 const app = require('./app.js');
 
@@ -25,6 +26,8 @@ const assets_handler = sirv('build/assets', {
 	immutable: true
 });
 
+const platform = node_platform(app.paths);
+
 const server = http.createServer((req, res) => {
 	assets_handler(req, res, () => {
 		static_handler(req, res, () => {
@@ -38,7 +41,7 @@ const server = http.createServer((req, res) => {
 					path: parsed.pathname,
 					body: await get_body(req),
 					query: new URLSearchParams(parsed.query || '')
-				});
+				}, { platform });
 
 				if (rendered) {
 					res.writeHead(rendered.status, rendered.headers);
