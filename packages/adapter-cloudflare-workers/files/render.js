@@ -1,9 +1,29 @@
 import { render } from './app.js';
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+import { getAssetFromKV, NotFoundError } from '@cloudflare/kv-asset-handler';
 
 addEventListener('fetch', (event) => {
 	event.respondWith(handleEvent(event));
 });
+
+const platform = {
+	
+	fetch: (url, init) => {
+		console.log("fetching", url, init);
+		return fetch(url, init)
+	},
+	/**
+     * 
+     * @param {string} filename 
+     * @returns {Response}
+     */
+    fetch_file(pathname) {
+		return null;
+    },
+
+    create_response(body, options) {
+        return new Response(body, options);
+    }
+}
 
 async function handleEvent(event) {
 	//try static files first
@@ -11,7 +31,7 @@ async function handleEvent(event) {
 		try {
 			return await getAssetFromKV(event);
 		} catch (e) {
-			if (!e instanceof NotFoundError) {
+			if (!(e instanceof NotFoundError)) {
 				return new Response('Error loading static asset:' + (e.message || e.toString()), {
 					status: 500
 				});
@@ -29,8 +49,9 @@ async function handleEvent(event) {
 			path: request_url.pathname,
 			query: request_url.searchParams,
 			body: request.body,
+			headers: request.headers,
 			method: request.method
-		});
+		}, { platform });
 
 		if (rendered) {
 			const response = new Response(rendered.body, {
